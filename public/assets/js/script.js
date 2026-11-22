@@ -6,15 +6,6 @@
   const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  /* ---------------- scroll progress + header ---------------- */
-  const header = $('#siteHeader');
-  const onScroll = () => {
-    const y = window.scrollY;
-    header.classList.toggle('is-scrolled', y > 40);
-  };
-  window.addEventListener('scroll', onScroll, { passive: true });
-  onScroll();
-
   /* ---------------- hero particles ---------------- */
   const particles = $('#particles');
   if (particles && !reduceMotion) {
@@ -50,19 +41,31 @@
     revealTargets.forEach((el) => io.observe(el));
   }
 
-  /* ---------------- music player ---------------- */
+  /* ---------------- music player & autoplay ---------------- */
   const AUDIO_SRC = 'assets/audio/5588669ada1c6a66638df27bdc4c0666.mp3';
   const audio = new Audio(AUDIO_SRC);
-  audio.preload = 'metadata';
+  audio.preload = 'auto';
+  audio.volume = 0.85;
+
   const btnPlay = $('#btnPlay');
   const btnPrev = $('#btnPrev');
   const btnNext = $('#btnNext');
-  const playIcon = btnPlay ? btnPlay.querySelector('use') : null;
   const progressTrack = $('#progressTrack');
   const progressFill = $('#progressFill');
   const tCur = $('#tCur');
   const tDur = $('#tDur');
   const playerNote = $('#playerNote');
+
+  const dock = $('#musicDock');
+  const dockToggle = $('#dockToggle');
+  const dockIconUse = $('#dockIconUse');
+  const activate = $('#musicActivate');
+
+  const PLAY_ICON = '#ic-play';
+  const PAUSE_ICON = '#ic-pause';
+  const STORAGE_KEY = 'merey-music-enabled';
+  let audioLoadedOk = false;
+  let audioErrored = false;
 
   const fmt = (sec) => {
     if (!isFinite(sec) || sec < 0) sec = 0;
@@ -71,16 +74,43 @@
     return m + ':' + String(s).padStart(2, '0');
   };
 
-  const setPlayIcon = (playing) => {
-    if (!playIcon) return;
-    playIcon.setAttribute('href', playing ? '#ic-pause' : '#ic-play');
-    btnPlay.setAttribute('aria-label', playing ? 'Тоқтату' : 'Ойнату');
+  const setDockVisible = (visible) => {
+    if (!dock) return;
+    document.body.classList.toggle('music-active', visible);
+    if (visible) {
+      dock.removeAttribute('hidden');
+      requestAnimationFrame(() => requestAnimationFrame(() => dock.classList.add('is-visible')));
+    } else {
+      dock.classList.remove('is-visible');
+      dock.setAttribute('hidden', '');
+    }
   };
+
+  const setActivateVisible = (visible) => {
+    if (!activate) return;
+    if (visible) activate.removeAttribute('hidden');
+    else activate.setAttribute('hidden', '');
+  };
+
+  const setIcons = (playing) => {
+    const btnIcon = btnPlay ? btnPlay.querySelector('use') : null;
+    if (btnIcon) {
+      btnIcon.setAttribute('href', playing ? PAUSE_ICON : PLAY_ICON);
+      btnPlay.setAttribute('aria-label', playing ? 'Тоқтату' : 'Ойнату');
+    }
+    if (dockIconUse) {
+      dockIconUse.setAttribute('href', playing ? PAUSE_ICON : PLAY_ICON);
+      dockToggle.setAttribute('aria-label', playing ? 'Музыканы тоқтату' : 'Музыканы қосу');
+    }
+    if (dock) dock.classList.toggle('is-playing', playing);
+  };
+
   const setNote = (text, isError = false) => {
     if (!playerNote) return;
     playerNote.textContent = text;
     playerNote.classList.toggle('is-error', isError);
   };
+
   const updateProgress = () => {
     const dur = audio.duration;
     if (dur && isFinite(dur)) {
@@ -93,8 +123,24 @@
     tCur.textContent = fmt(audio.currentTime);
   };
 
-  let audioLoadedOk = false;
-  let audioErrored = false;
+  const persistPreference = () => {
+    try { localStorage.setItem(STORAGE_KEY, '1'); } catch (e) {}
+  };
+
+  const tryPlay = async () => {
+    try {
+      await audio.play();
+      persistPreference();
+      setActivateVisible(false);
+      setDockVisible(true);
+      setIcons(true);
+      return true;
+    } catch (e) {
+      setActivateVisible(true);
+      return false;
+    }
+  };
+
   audio.addEventListener('loadedmetadata', () => {
     audioLoadedOk = true;
     audioErrored = false;
@@ -107,27 +153,42 @@
     setNote('Аудио файл табылмады — файлды қосу қажет', true);
   });
   audio.addEventListener('timeupdate', updateProgress);
-  audio.addEventListener('ended', () => { setPlayIcon(false); setNote('Той үнісі — Алтынай Жорабаева'); updateProgress(); });
-  audio.addEventListener('play', () => { setPlayIcon(true); setNote('Ойнап жатады — Алтынай Жорабаева'); });
-  audio.addEventListener('pause', () => { setPlayIcon(false); });
+  audio.addEventListener('play', () => {
+    setDockVisible(true);
+    setIcons(true);
+    setActivateVisible(false);
+    setNote('Ойнап жатады — Алтынай Жорабаева');
+  });
+  audio.addEventListener('pause', () => {
+    setIcons(false);
+    setNote('Ойнату тоқтатылды — Алтынай Жорабаева');
+  });
+  audio.addEventListener('ended', () => {
+    setIcons(false);
+    setNote('Той үнісі — Алтынай Жорабаева');
+    updateProgress();
+  });
 
   const togglePlay = () => {
     if (audioErrored || !audioLoadedOk) {
       audioErrored = false;
-      audio.load(); // retry
+      audio.load();
+      setActivateVisible(true);
       setNote('Аудио файл табылмады — файлды қосу қажет', true);
       return;
     }
     if (audio.paused) {
-      audio.play().then(() => {}).catch(() => setNote('Ойнату мүмкін болмады — қайталап көріңіз', true));
+      audio.play().catch(() => setActivateVisible(true));
     } else {
       audio.pause();
     }
   };
 
   btnPlay.addEventListener('click', togglePlay);
-  btnPrev.addEventListener('click', () => { audio.currentTime = 0; audio.play().catch(() => {}); });
-  btnNext.addEventListener('click', () => { audio.currentTime = 0; audio.play().catch(() => {}); });
+  dockToggle.addEventListener('click', togglePlay);
+  btnPrev.addEventListener('click', () => { audio.currentTime = 0; audio.play().catch(() => setActivateVisible(true)); });
+  btnNext.addEventListener('click', () => { audio.currentTime = 0; audio.play().catch(() => setActivateVisible(true)); });
+  if (activate) activate.addEventListener('click', () => { tryPlay(); });
 
   const seekFromEvent = (e) => {
     const rect = progressTrack.getBoundingClientRect();
@@ -145,6 +206,40 @@
     if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') { audio.currentTime = Math.max(0, audio.currentTime - step); e.preventDefault(); }
     if (e.key === 'Home') { audio.currentTime = 0; e.preventDefault(); }
     if (e.key === 'End') { audio.currentTime = audio.duration; e.preventDefault(); }
+  });
+
+  /* ---- autoplay attempt + graceful fallback ----
+     Browsers block audio-with-sound autoplay. We try once right away,
+     and once more on the very first user interaction. If it fails, an
+     elegant activation button is shown — we never claim it started. */
+  const preferred = (() => { try { return localStorage.getItem(STORAGE_KEY) === '1'; } catch (e) { return false; } })();
+
+  const tryAutoplay = async () => {
+    try {
+      await audio.play();
+      persistPreference();
+      setActivateVisible(false);
+      setDockVisible(true);
+      setIcons(true);
+    } catch (e) {
+      setActivateVisible(true); // honest fallback, not a fake success
+    }
+  };
+
+  // autoplay attempt on load
+  tryAutoplay();
+
+  // retry on the first user interaction anywhere
+  window.addEventListener('pointerdown', () => {
+    if (audio.paused) tryAutoplay();
+  }, { once: true, passive: true });
+  window.addEventListener('keydown', () => {
+    if (audio.paused) tryAutoplay();
+  }, { once: true, passive: true });
+
+  // retry on visibility change only after a prior failure (e.g. unlock after returning to tab)
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden && audio.paused && preferred) tryAutoplay();
   });
 
   /* ---------------- calendar (December 2026) ---------------- */

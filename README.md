@@ -15,11 +15,11 @@ Zero dependencies — no build step, no install. Fonts, images and the audio tra
 
 ## Sections
 
-Hero (bride portrait, 100svh) → invitation on rich burgundy → hosts & event info (Өмірзақ – Алия, 12 желтоқсан 2026, 19:00, photo background) → elegant December 2026 calendar (12 highlighted) → music player (Алтынай Жорабаева — «Қызыма тілек») → location (Жетісай қаласы «Мұрагер» тойханасы + Google Maps, photo) → live countdown (ornament textile) → «Анкета» RSVP form → large photographic gallery → closing message (white-dress bride portrait). Flowing, full-screen photographic sections with no card-box UI.
+The invitation has no header — it starts immediately with a full-screen hero (bride portrait, 100svh). Guided rhythm: invitation (warm ivory editorial) → hosts & event info (photo, left-aligned editorial) → elegant December 2026 calendar (12 highlighted, ivory) → music player (full-screen gold-embroidery stage) → location (ivory, minimal editorial) → minimal live countdown (ornament textile) → «Анкета» RSVP form (ivory) → large dark photographic gallery → closing message (white-dress bride portrait). No header, no card-box UI, no dashboard chrome.
 
 ## Music
 
-Music starts **only after the visitor presses play** (no autoplay). The licensed MP3 provided by the site owner lives at `public/assets/audio/5588669ada1c6a66638df27bdc4c0666.mp3` and the player points at that file (see `AUDIO_SRC` in `script.js`). If the file is missing it, the player shows a polite note instead of failing.
+The page **attempts to autoplay** the background music the moment it opens and again on the first user interaction. Honest fallback: if the browser blocks audio-with-sound autoplay (typical on mobile), an elegant «Музыканы қосу» activation chip appears — the player never claims it started when it didn't. Once enabled, the music continues across every section (a persistent mini-dock shows play/pause, animated equalizer and the song title) without restarting. The licensed MP3 lives at `public/assets/audio/5588669ada1c6a66638df27bdc4c0666.mp3` and is pointed to by `AUDIO_SRC` in `script.js`. If the file is missing, the player shows a polite note instead of failing.
 
 To add the track:
 
