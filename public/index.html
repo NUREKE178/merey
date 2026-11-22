@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>«Мерей» — Қыз ұзату тойы</title>
   <meta name="description" content="Мерейдің қыз ұзату тойы — 12 желтоқсан 2026, 19:00 · Жетісай қаласы «Мұрагер» тойханасы">
-  <meta name="theme-color" content="#20090f">
+  <meta name="theme-color" content="#260c14">
   <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
   <link rel="stylesheet" href="assets/fonts.css">
   <link rel="stylesheet" href="assets/css/styles.css">
@@ -34,15 +34,6 @@
       <rect x="370" y="18" width="8" height="8" transform="rotate(45 374 22)" fill="currentColor" />
       <g transform="translate(300 22) scale(0.72)"><use href="#orn-rosette" /></g>
     </symbol>
-    <!-- ornament: corner flourish -->
-    <symbol id="orn-corner" viewBox="0 0 100 100">
-      <path d="M6,94 L6,30 Q6,6 30,6 L94,6" fill="none" stroke="currentColor" stroke-width="2.4" />
-      <path d="M16,94 L16,36 Q16,16 36,16 L94,16" fill="none" stroke="currentColor" stroke-width="1" opacity="0.7" />
-      <circle cx="6" cy="94" r="3.2" fill="currentColor" />
-      <circle cx="94" cy="6" r="3.2" fill="currentColor" />
-      <rect x="26.5" y="26.5" width="7" height="7" transform="rotate(45 30 30)" fill="currentColor" />
-    </symbol>
-
     <!-- icons -->
     <symbol id="ic-play" viewBox="0 0 24 24"><path d="M8 5.3v13.4c0 .9 1 1.4 1.7.9l11-6.7c.6-.4.6-1.4 0-1.8l-11-6.7c-.7-.5-1.7 0-1.7.9Z" fill="currentColor"/></symbol>
     <symbol id="ic-pause" viewBox="0 0 24 24"><path d="M7 5h3.4v14H7zM13.6 5H17v14h-3.4z" fill="currentColor"/></symbol>
@@ -72,12 +63,11 @@
     <a href="#gallery">Фото</a>
     <a href="#rsvp" class="nav-cta">Анкета</a>
   </nav>
-  <div class="scroll-progress" aria-hidden="true"><span id="scrollProgress"></span></div>
 </header>
 
 <main id="top">
 
-  <!-- HERO -->
+  <!-- 1. HERO -->
   <section class="hero" id="hero" aria-label="Басты шығарма">
     <div class="hero-media" aria-hidden="true"><img src="assets/images/hero-bride.jpg" alt="" fetchpriority="high"></div>
     <div class="hero-overlay" aria-hidden="true"></div>
@@ -86,7 +76,7 @@
       <p class="hero-eyebrow"><span class="eyebrow-line"></span>Өмірзақ – Алия<span class="eyebrow-line"></span></p>
       <h1 class="hero-title">Мерей</h1>
       <p class="hero-sub">Қыз ұзату тойы</p>
-      <div class="hero-orn" aria-hidden="true"><svg viewBox="0 0 600 44"><use href="#orn-divider" /></svg></div>
+      <div class="orn-divider" aria-hidden="true"><svg viewBox="0 0 600 44"><use href="#orn-divider" /></svg></div>
       <p class="hero-meta">12 желтоқсан 2026&nbsp;·&nbsp;19:00</p>
     </div>
     <a class="hero-scroll" href="#invitation" aria-label="Төменге қарау">
@@ -94,65 +84,40 @@
     </a>
   </section>
 
-  <!-- INVITATION -->
-  <section class="section-photo section-invitation bg-yurts" id="invitation">
-    <div class="section-bg" aria-hidden="true"></div>
-    <div class="container section-inner">
+  <div class="deco-strip" aria-hidden="true"></div>
+
+  <!-- 2. INVITATION — rich burgundy -->
+  <section class="section-plain section-invitation" id="invitation">
+    <div class="container section-inner invitation-text">
       <p class="sec-kicker">Шақыру</p>
       <h2 class="sec-title">Құрметті қонақтар!</h2>
       <div class="orn-divider" aria-hidden="true"><svg viewBox="0 0 600 44"><use href="#orn-divider" /></svg></div>
       <p class="sec-lead">Өмірзақ пен Алия Мерейдің қыз ұзату тойына сізді шақырады. Бұл — дәстүрді сақтап, қуанышты бірге тойлауға айтатын күн. Біз сізді, қуанышқа бөлісіп, тойымызды маңызды етуге шақырамыз.</p>
+      <p class="invitation-names">Өмірзақ – Алия</p>
     </div>
   </section>
 
-  <!-- MUSIC PLAYER -->
-  <section class="section-photo section-music bg-embroidery" id="music">
-    <div class="section-bg" aria-hidden="true"></div>
-    <div class="container section-inner">
-      <p class="sec-kicker">Мерейдің тойы</p>
-      <h2 class="sec-title">Музыка</h2>
-      <div class="orn-divider" aria-hidden="true"><svg viewBox="0 0 600 44"><use href="#orn-divider" /></svg></div>
-      <div class="player gold-frame" id="player">
-        <div class="player-art">
-          <img src="assets/images/gallery-tapestry.jpg" alt="Алтын мата">
-          <span class="art-ring" aria-hidden="true"></span>
-        </div>
-        <div class="player-main">
-          <p class="player-artist">Алтынай Жорабаева</p>
-          <p class="player-title">«Қызыма тілек»</p>
-          <p class="player-note" id="playerNote">Музыка тек сіз басқаннан кейін ғана ойнайды</p>
-          <div class="player-controls" role="group" aria-label="Ойналғыш басқармасы">
-            <button type="button" class="pbtn pbtn-skip" id="btnPrev" aria-label="Алдыңғы"><svg viewBox="0 0 24 24"><use href="#ic-prev" /></svg></button>
-            <button type="button" class="pbtn pbtn-play" id="btnPlay" aria-label="Ойнату"><svg viewBox="0 0 24 24"><use href="#ic-play" /></svg></button>
-            <button type="button" class="pbtn pbtn-skip" id="btnNext" aria-label="Келесі"><svg viewBox="0 0 24 24"><use href="#ic-next" /></svg></button>
-          </div>
-          <div class="progress" id="progressTrack" role="slider" tabindex="0" aria-label="Музыка шкаласы" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
-            <div class="progress-fill" id="progressFill"></div>
-          </div>
-          <div class="player-time"><span id="tCur">0:00</span><span id="tDur">—:—</span></div>
-        </div>
-      </div>
-    </div>
-  </section>
+  <div class="deco-strip" aria-hidden="true"></div>
 
-  <!-- EVENT DETAILS -->
+  <!-- 3. HOSTS & EVENT INFORMATION -->
   <section class="section-photo section-details bg-red-yurt" id="details">
     <div class="section-bg" aria-hidden="true"></div>
+    <div class="section-overlay" aria-hidden="true"></div>
     <div class="container section-inner">
       <p class="sec-kicker">Той мәліметі</p>
       <h2 class="sec-title">Мәліметтер</h2>
       <div class="orn-divider" aria-hidden="true"><svg viewBox="0 0 600 44"><use href="#orn-divider" /></svg></div>
-      <div class="details-card gold-frame">
+      <div class="details-list">
         <div class="detail-row">
           <span class="detail-label"><svg viewBox="0 0 24 24"><use href="#ic-users" /></svg>Той иелері</span>
-          <span class="detail-value">Өмірзақ&nbsp;–&nbsp;Алия</span>
+          <span class="detail-value">Өмірзақ – Алия</span>
         </div>
-        <div class="detail-sep" aria-hidden="true"></div>
+        <div class="detail-sep" aria-hidden="true"><svg viewBox="0 0 600 44"><use href="#orn-divider" /></svg></div>
         <div class="detail-row">
           <span class="detail-label"><svg viewBox="0 0 24 24"><use href="#ic-calendar" /></svg>Күні</span>
           <span class="detail-value">12 желтоқсан 2026 жыл</span>
         </div>
-        <div class="detail-sep" aria-hidden="true"></div>
+        <div class="detail-sep" aria-hidden="true"><svg viewBox="0 0 600 44"><use href="#orn-divider" /></svg></div>
         <div class="detail-row">
           <span class="detail-label"><svg viewBox="0 0 24 24"><use href="#ic-clock" /></svg>Уақыты</span>
           <span class="detail-value">19:00</span>
@@ -161,30 +126,65 @@
     </div>
   </section>
 
-  <!-- CALENDAR -->
+  <div class="deco-strip" aria-hidden="true"></div>
+
+  <!-- 4. CALENDAR -->
   <section class="section-plain section-calendar" id="calendar">
     <div class="container section-inner">
       <p class="sec-kicker">Той күні</p>
       <h2 class="sec-title">Желтоқсан 2026</h2>
       <div class="orn-divider" aria-hidden="true"><svg viewBox="0 0 600 44"><use href="#orn-divider" /></svg></div>
-      <div class="calendar-card gold-frame has-corners">
+      <div class="calendar-wrap">
         <div class="cal-dows" aria-hidden="true">
           <span>Дс</span><span>Сс</span><span>Ср</span><span>Бс</span><span>Жм</span><span>Сн</span><span>Жс</span>
         </div>
         <div class="cal-grid" id="calGrid" role="grid" aria-label="Желтоқсан 2026"></div>
+        <p class="cal-legend"><span class="cal-mark" aria-hidden="true"></span>12 желтоқсан — Мерейдің қыз ұзату тойы</p>
       </div>
-      <p class="cal-legend"><span class="cal-mark" aria-hidden="true"></span>12 желтоқсан — Мерейдің қыз ұзату тойы</p>
     </div>
   </section>
 
-  <!-- LOCATION -->
+  <div class="deco-strip" aria-hidden="true"></div>
+
+  <!-- 5. MUSIC PLAYER -->
+  <section class="section-photo section-music bg-embroidery" id="music">
+    <div class="section-bg" aria-hidden="true"></div>
+    <div class="section-overlay" aria-hidden="true"></div>
+    <div class="container section-inner">
+      <p class="sec-kicker">Той үнісі</p>
+      <h2 class="sec-title">Музыка</h2>
+      <div class="orn-divider" aria-hidden="true"><svg viewBox="0 0 600 44"><use href="#orn-divider" /></svg></div>
+      <div class="player" id="player">
+        <div class="player-art">
+          <img src="assets/images/gallery-tapestry.jpg" alt="Алтын мата">
+        </div>
+        <p class="player-artist">Алтынай Жорабаева</p>
+        <p class="player-title">«Қызыма тілек»</p>
+        <p class="player-note" id="playerNote">Музыка тек сіз басқаннан кейін ғана ойнайды</p>
+        <div class="player-controls" role="group" aria-label="Ойналғыш басқармасы">
+          <button type="button" class="pbtn pbtn-skip" id="btnPrev" aria-label="Алдыңғы"><svg viewBox="0 0 24 24"><use href="#ic-prev" /></svg></button>
+          <button type="button" class="pbtn pbtn-play" id="btnPlay" aria-label="Ойнату"><svg viewBox="0 0 24 24"><use href="#ic-play" /></svg></button>
+          <button type="button" class="pbtn pbtn-skip" id="btnNext" aria-label="Келесі"><svg viewBox="0 0 24 24"><use href="#ic-next" /></svg></button>
+        </div>
+        <div class="progress" id="progressTrack" role="slider" tabindex="0" aria-label="Музыка шкаласы" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <div class="player-time"><span id="tCur">0:00</span><span id="tDur">—:—</span></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="deco-strip" aria-hidden="true"></div>
+
+  <!-- 6. LOCATION -->
   <section class="section-photo section-location bg-carpet" id="location">
     <div class="section-bg" aria-hidden="true"></div>
+    <div class="section-overlay" aria-hidden="true"></div>
     <div class="container section-inner">
       <p class="sec-kicker">Орналасуы</p>
       <h2 class="sec-title">Той орны</h2>
       <div class="orn-divider" aria-hidden="true"><svg viewBox="0 0 600 44"><use href="#orn-divider" /></svg></div>
-      <div class="location-card gold-frame">
+      <div class="location-body">
         <span class="pin-badge" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#ic-pin" /></svg></span>
         <p class="location-city">Жетісай қаласы</p>
         <p class="location-venue">«Мұрагер» тойханасы</p>
@@ -196,24 +196,29 @@
     </div>
   </section>
 
-  <!-- COUNTDOWN -->
+  <div class="deco-strip" aria-hidden="true"></div>
+
+  <!-- 7. COUNTDOWN -->
   <section class="section-photo section-countdown bg-ornament" id="countdown">
     <div class="section-bg" aria-hidden="true"></div>
+    <div class="section-overlay" aria-hidden="true"></div>
     <div class="container section-inner">
       <p class="sec-kicker">Уақыт</p>
       <h2 class="sec-title">Қалған уақыт</h2>
       <div class="orn-divider" aria-hidden="true"><svg viewBox="0 0 600 44"><use href="#orn-divider" /></svg></div>
       <div class="cd-grid" role="timer" aria-label="Тойға қалған уақыт">
-        <div class="cd-cell gold-frame"><span class="cd-num" id="cdDays">—</span><span class="cd-label">Күн</span></div>
-        <div class="cd-cell gold-frame"><span class="cd-num" id="cdHours">—</span><span class="cd-label">Сәғат</span></div>
-        <div class="cd-cell gold-frame"><span class="cd-num" id="cdMins">—</span><span class="cd-label">Минут</span></div>
-        <div class="cd-cell gold-frame"><span class="cd-num" id="cdSecs">—</span><span class="cd-label">Секунд</span></div>
+        <div class="cd-cell"><span class="cd-num" id="cdDays">—</span><span class="cd-tick" aria-hidden="true"></span><span class="cd-label">Күн</span></div>
+        <div class="cd-cell"><span class="cd-num" id="cdHours">—</span><span class="cd-tick" aria-hidden="true"></span><span class="cd-label">Сәғат</span></div>
+        <div class="cd-cell"><span class="cd-num" id="cdMins">—</span><span class="cd-tick" aria-hidden="true"></span><span class="cd-label">Минут</span></div>
+        <div class="cd-cell"><span class="cd-num" id="cdSecs">—</span><span class="cd-tick" aria-hidden="true"></span><span class="cd-label">Секунд</span></div>
       </div>
       <p class="cd-status" id="cdStatus"></p>
     </div>
   </section>
 
-  <!-- RSVP -->
+  <div class="deco-strip" aria-hidden="true"></div>
+
+  <!-- 8. RSVP -->
   <section class="section-plain section-rsvp" id="rsvp">
     <div class="container section-inner">
       <p class="sec-kicker">Анкета</p>
@@ -221,7 +226,7 @@
       <div class="orn-divider" aria-hidden="true"><svg viewBox="0 0 600 44"><use href="#orn-divider" /></svg></div>
 
       <div class="rsvp-shell">
-        <form class="rsvp-form gold-frame has-corners" id="rsvpForm" novalidate>
+        <form class="rsvp-form" id="rsvpForm" novalidate>
           <div class="field">
             <label for="rsvp-name">Қонақтың аты-жөні</label>
             <input type="text" id="rsvp-name" name="name" autocomplete="name" required
@@ -239,22 +244,22 @@
           </div>
           <fieldset class="field">
             <legend>Тойға келесіз бе?</legend>
-            <label class="radio-card">
+            <label class="choice-row">
               <input type="radio" name="coming" value="yes" checked>
-              <span class="radio-ui" aria-hidden="true"></span>
-              <span class="radio-text">Әрине, келемін!</span>
+              <span class="choice-ui" aria-hidden="true"></span>
+              <span class="choice-text">Әрине, келемін!</span>
             </label>
-            <label class="radio-card">
+            <label class="choice-row">
               <input type="radio" name="coming" value="no">
-              <span class="radio-ui" aria-hidden="true"></span>
-              <span class="radio-text">Өкінішке орай, келе алмаймын.</span>
+              <span class="choice-ui" aria-hidden="true"></span>
+              <span class="choice-text">Өкінішке орай, келе алмаймын.</span>
             </label>
           </fieldset>
           <button type="submit" class="btn-submit" id="rsvpSubmit">ЖІБЕРУ</button>
           <p class="form-note" id="formNote" role="status" aria-live="polite"></p>
         </form>
 
-        <div class="rsvp-success gold-frame has-corners" id="rsvpSuccess" hidden>
+        <div class="rsvp-success" id="rsvpSuccess" hidden>
           <span class="success-rosette" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#ic-check" /></svg></span>
           <h3 class="success-title">Рақмет!</h3>
           <p class="success-text" id="successText"></p>
@@ -264,16 +269,18 @@
     </div>
   </section>
 
-  <!-- GALLERY -->
+  <div class="deco-strip" aria-hidden="true"></div>
+
+  <!-- 9. GALLERY -->
   <section class="section-plain section-gallery" id="gallery">
     <div class="container section-inner">
       <p class="sec-kicker">Мұра</p>
       <h2 class="sec-title">Суреттер галереясы</h2>
       <div class="orn-divider" aria-hidden="true"><svg viewBox="0 0 600 44"><use href="#orn-divider" /></svg></div>
-      <div class="gallery-frame gold-frame has-corners">
+      <div class="gallery-frame gallery-wrap">
         <button type="button" class="gal-arrow gal-prev" id="galPrev" aria-label="Алдыңғы сурет"><svg viewBox="0 0 24 24"><use href="#ic-left" /></svg></button>
         <figure class="gal-stage">
-          <img id="galImg" src="assets/images/gallery-veil.jpg" alt="Ақ киімдегі қыз ұзату сәті">
+          <img id="galImg" src="assets/images/gallery-ceremony.jpg" alt="Қыз ұзату тойы">
           <figcaption class="gal-caption" id="galCaption">Қыз ұзату тойы</figcaption>
         </figure>
         <button type="button" class="gal-arrow gal-next" id="galNext" aria-label="Келесі сурет"><svg viewBox="0 0 24 24"><use href="#ic-right" /></svg></button>
@@ -282,14 +289,19 @@
     </div>
   </section>
 
-  <!-- FINAL -->
-  <section class="section-photo section-final bg-gold-yurt" id="final">
+  <div class="deco-strip" aria-hidden="true"></div>
+
+  <!-- 10. CLOSING -->
+  <section class="section-photo section-final bg-bride-white" id="final">
     <div class="section-bg" aria-hidden="true"></div>
+    <div class="section-overlay" aria-hidden="true"></div>
     <div class="container section-inner">
-      <p class="final-names">Өмірзақ – Алия</p>
-      <h2 class="final-title">Ақ тілектеріңізбен бөлісіп,<br>қуанышымызға ортақ болыңыздар!</h2>
-      <div class="orn-divider" aria-hidden="true"><svg viewBox="0 0 600 44"><use href="#orn-divider" /></svg></div>
-      <p class="final-sub">Мерейдің қыз ұзату тойы · 12 желтоқсан 2026</p>
+      <div class="final-body">
+        <p class="final-names">Өмірзақ – Алия</p>
+        <h2 class="final-title">Ақ тілектеріңізбен бөлісіп,<br>қуанышымызға ортақ болыңыздар!</h2>
+        <div class="orn-divider" aria-hidden="true"><svg viewBox="0 0 600 44"><use href="#orn-divider" /></svg></div>
+        <p class="final-sub">Мерейдің қыз ұзату тойы · 12 желтоқсан 2026</p>
+      </div>
     </div>
   </section>
 </main>

@@ -8,28 +8,12 @@
 
   /* ---------------- scroll progress + header ---------------- */
   const header = $('#siteHeader');
-  const progressBar = $('#scrollProgress');
   const onScroll = () => {
     const y = window.scrollY;
     header.classList.toggle('is-scrolled', y > 40);
-    const doc = document.documentElement;
-    const max = doc.scrollHeight - doc.clientHeight;
-    if (progressBar) progressBar.style.width = (max > 0 ? (y / max) * 100 : 0) + '%';
   };
   window.addEventListener('scroll', onScroll, { passive: true });
   onScroll();
-
-  /* ---------------- corner flourishes ---------------- */
-  $$('.has-corners').forEach((el) => {
-    if (el.querySelector('.corner')) return;
-    ['tl', 'tr', 'bl', 'br'].forEach((pos) => {
-      const span = document.createElement('span');
-      span.className = 'corner ' + pos;
-      span.setAttribute('aria-hidden', 'true');
-      span.innerHTML = '<svg viewBox="0 0 100 100"><use href="#orn-corner"></use></svg>';
-      el.appendChild(span);
-    });
-  });
 
   /* ---------------- hero particles ---------------- */
   const particles = $('#particles');
@@ -67,7 +51,7 @@
   }
 
   /* ---------------- music player ---------------- */
-  const AUDIO_SRC = 'assets/audio/qyzima-tilek.mp3';
+  const AUDIO_SRC = 'assets/audio/5588669ada1c6a66638df27bdc4c0666.mp3';
   const audio = new Audio(AUDIO_SRC);
   audio.preload = 'metadata';
   const btnPlay = $('#btnPlay');
@@ -292,14 +276,11 @@
 
   /* ---------------- gallery carousel ---------------- */
   const SLIDES = [
-    { src: 'assets/images/gallery-veil.jpg', alt: 'Ақ киімдегі қыз ұзату сәті', caption: 'Қыз ұзату тойы' },
-    { src: 'assets/images/gallery-ceremony.jpg', alt: 'Тойдағы қыз ұзату сәті', caption: 'Қуаныштың келісілді' },
-    { src: 'assets/images/gallery-bride-bouquet.jpg', alt: 'Гүлшоқпен қыз', caption: 'Алтын саябақ' },
-    { src: 'assets/images/gallery-bride-white.jpg', alt: 'Ақ матадағы қыз', caption: 'Мерейдің сәті' },
-    { src: 'assets/images/gallery-bride-chair.jpg', alt: 'Дәстүрлі киімдегі қыз', caption: 'Қыз ұзату тойы' },
-    { src: 'assets/images/gallery-embroidery.jpg', alt: 'Алтын өрнек матасы', caption: 'Алтын мата' },
-    { src: 'assets/images/gallery-tapestry.jpg', alt: 'Алтын өрнек', caption: 'Алтын өрнек' },
-    { src: 'assets/images/gallery-yurts.jpg', alt: 'Ақ үру юрталары', caption: 'Ұй орны' },
+    { src: 'assets/images/gallery-ceremony.jpg', alt: 'Қыз ұзату тойы — ақ киімдегі қыз', caption: 'Қыз ұзату тойы' },
+    { src: 'assets/images/gallery-bride-chair.jpg', alt: 'Дәстүрлі киімдегі қыз', caption: 'Ақ киімдегі Мерей' },
+    { src: 'assets/images/gallery-tapestry.jpg', alt: 'Алтын өрнек матасы', caption: 'Алтын мата — өрнек' },
+    { src: 'assets/images/gallery-embroidery.jpg', alt: 'Алтын өрнекті мата', caption: 'Алтын өрнек' },
+    { src: 'assets/images/bg-bride-white.jpg', alt: 'Ақ матадағы Мерей', caption: 'Мерейдің сәті' },
   ];
   const galImg = $('#galImg');
   const galCaption = $('#galCaption');
