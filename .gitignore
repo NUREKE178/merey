@@ -1,0 +1,11 @@
+node_modules/
+.venv/
+data/
+.env
+.env.local
+image-search/
+Unselected files/
+*.mp3
+*.wav
+.DS_Store
+Thumbs.db

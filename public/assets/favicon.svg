@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f0d9a0"/>
+      <stop offset="1" stop-color="#b08234"/>
+    </linearGradient>
+  </defs>
+  <circle cx="32" cy="32" r="29" fill="#260d15" stroke="url(#g)" stroke-width="2.6"/>
+  <circle cx="32" cy="32" r="22" fill="none" stroke="url(#g)" stroke-width="1.1" opacity="0.6"/>
+  <text x="32" y="40" font-family="Georgia, 'Times New Roman', serif" font-size="26" font-weight="700" fill="url(#g)" text-anchor="middle">М</text>
+</svg>
