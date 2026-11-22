@@ -41,37 +41,20 @@
     revealTargets.forEach((el) => io.observe(el));
   }
 
-  /* ---------------- music player & autoplay ---------------- */
+  /* ---------------- music: persistent looping background ---------------- */
   const AUDIO_SRC = 'assets/audio/5588669ada1c6a66638df27bdc4c0666.mp3';
   const audio = new Audio(AUDIO_SRC);
   audio.preload = 'auto';
   audio.volume = 0.85;
-
-  const btnPlay = $('#btnPlay');
-  const btnPrev = $('#btnPrev');
-  const btnNext = $('#btnNext');
-  const progressTrack = $('#progressTrack');
-  const progressFill = $('#progressFill');
-  const tCur = $('#tCur');
-  const tDur = $('#tDur');
-  const playerNote = $('#playerNote');
+  audio.loop = true; // the track repeats seamlessly; no restart on page load or navigation
 
   const dock = $('#musicDock');
   const dockToggle = $('#dockToggle');
   const dockIconUse = $('#dockIconUse');
-  const activate = $('#musicActivate');
-
-  const PLAY_ICON = '#ic-play';
-  const PAUSE_ICON = '#ic-pause';
   const STORAGE_KEY = 'merey-music-enabled';
-  let audioLoadedOk = false;
-  let audioErrored = false;
 
-  const fmt = (sec) => {
-    if (!isFinite(sec) || sec < 0) sec = 0;
-    const m = Math.floor(sec / 60);
-    const s = Math.floor(sec % 60);
-    return m + ':' + String(s).padStart(2, '0');
+  const persistPreference = () => {
+    try { localStorage.setItem(STORAGE_KEY, '1'); } catch (e) {}
   };
 
   const setDockVisible = (visible) => {
@@ -86,161 +69,49 @@
     }
   };
 
-  const setActivateVisible = (visible) => {
-    if (!activate) return;
-    if (visible) activate.removeAttribute('hidden');
-    else activate.setAttribute('hidden', '');
-  };
-
   const setIcons = (playing) => {
-    const btnIcon = btnPlay ? btnPlay.querySelector('use') : null;
-    if (btnIcon) {
-      btnIcon.setAttribute('href', playing ? PAUSE_ICON : PLAY_ICON);
-      btnPlay.setAttribute('aria-label', playing ? 'Тоқтату' : 'Ойнату');
-    }
-    if (dockIconUse) {
-      dockIconUse.setAttribute('href', playing ? PAUSE_ICON : PLAY_ICON);
-      dockToggle.setAttribute('aria-label', playing ? 'Музыканы тоқтату' : 'Музыканы қосу');
-    }
+    if (dockIconUse) dockIconUse.setAttribute('href', playing ? '#ic-pause' : '#ic-play');
+    if (dockToggle) dockToggle.setAttribute('aria-label', playing ? 'Музыканы тоқтату' : 'Музыканы қосу');
     if (dock) dock.classList.toggle('is-playing', playing);
   };
 
-  const setNote = (text, isError = false) => {
-    if (!playerNote) return;
-    playerNote.textContent = text;
-    playerNote.classList.toggle('is-error', isError);
-  };
-
-  const updateProgress = () => {
-    const dur = audio.duration;
-    if (dur && isFinite(dur)) {
-      progressFill.style.width = ((audio.currentTime / dur) * 100) + '%';
-      progressTrack.setAttribute('aria-valuenow', Math.round((audio.currentTime / dur) * 100));
-      tDur.textContent = fmt(dur);
-    } else {
-      progressFill.style.width = '0%';
-    }
-    tCur.textContent = fmt(audio.currentTime);
-  };
-
-  const persistPreference = () => {
-    try { localStorage.setItem(STORAGE_KEY, '1'); } catch (e) {}
-  };
-
-  const tryPlay = async () => {
-    try {
-      await audio.play();
-      persistPreference();
-      setActivateVisible(false);
-      setDockVisible(true);
-      setIcons(true);
-      return true;
-    } catch (e) {
-      setActivateVisible(true);
-      return false;
-    }
-  };
-
-  audio.addEventListener('loadedmetadata', () => {
-    audioLoadedOk = true;
-    audioErrored = false;
-    setNote('Той үнісі — Алтынай Жорабаева');
-    updateProgress();
-  });
-  audio.addEventListener('error', () => {
-    audioLoadedOk = false;
-    audioErrored = true;
-    setNote('Аудио файл табылмады — файлды қосу қажет', true);
-  });
-  audio.addEventListener('timeupdate', updateProgress);
   audio.addEventListener('play', () => {
+    persistPreference();
     setDockVisible(true);
     setIcons(true);
-    setActivateVisible(false);
-    setNote('Ойнап жатады — Алтынай Жорабаева');
   });
-  audio.addEventListener('pause', () => {
-    setIcons(false);
-    setNote('Ойнату тоқтатылды — Алтынай Жорабаева');
-  });
-  audio.addEventListener('ended', () => {
-    setIcons(false);
-    setNote('Той үнісі — Алтынай Жорабаева');
-    updateProgress();
-  });
+  audio.addEventListener('pause', () => { setIcons(false); });
+  audio.addEventListener('ended', () => { setIcons(false); }); // loop=true covers repeat; no manual restart
 
   const togglePlay = () => {
-    if (audioErrored || !audioLoadedOk) {
-      audioErrored = false;
-      audio.load();
-      setActivateVisible(true);
-      setNote('Аудио файл табылмады — файлды қосу қажет', true);
-      return;
-    }
     if (audio.paused) {
-      audio.play().catch(() => setActivateVisible(true));
+      audio.play().catch(() => {}); // honest failure — nothing fake is shown
     } else {
       audio.pause();
     }
   };
 
-  btnPlay.addEventListener('click', togglePlay);
-  dockToggle.addEventListener('click', togglePlay);
-  btnPrev.addEventListener('click', () => { audio.currentTime = 0; audio.play().catch(() => setActivateVisible(true)); });
-  btnNext.addEventListener('click', () => { audio.currentTime = 0; audio.play().catch(() => setActivateVisible(true)); });
-  if (activate) activate.addEventListener('click', () => { tryPlay(); });
+  if (dockToggle) dockToggle.addEventListener('click', togglePlay);
 
-  const seekFromEvent = (e) => {
-    const rect = progressTrack.getBoundingClientRect();
-    const ratio = Math.min(1, Math.max(0, (e.clientX - rect.left) / rect.width));
-    if (isFinite(audio.duration) && audio.duration > 0) {
-      audio.currentTime = ratio * audio.duration;
-    }
-    updateProgress();
-  };
-  progressTrack.addEventListener('click', seekFromEvent);
-  progressTrack.addEventListener('keydown', (e) => {
-    if (!isFinite(audio.duration) || audio.duration <= 0) return;
-    const step = audio.duration * 0.05;
-    if (e.key === 'ArrowRight' || e.key === 'ArrowUp') { audio.currentTime = Math.min(audio.duration, audio.currentTime + step); e.preventDefault(); }
-    if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') { audio.currentTime = Math.max(0, audio.currentTime - step); e.preventDefault(); }
-    if (e.key === 'Home') { audio.currentTime = 0; e.preventDefault(); }
-    if (e.key === 'End') { audio.currentTime = audio.duration; e.preventDefault(); }
-  });
-
-  /* ---- autoplay attempt + graceful fallback ----
-     Browsers block audio-with-sound autoplay. We try once right away,
-     and once more on the very first user interaction. If it fails, an
-     elegant activation button is shown — we never claim it started. */
-  const preferred = (() => { try { return localStorage.getItem(STORAGE_KEY) === '1'; } catch (e) { return false; } })();
-
+  /* ---- autoplay strategy (honest) ----
+     Browsers block audio-with-sound autoplay. We attempt playback on load,
+     and retry once on the first user interaction. If it fails, we show
+     nothing — no activation button, no fake success. The retry after the
+     first real interaction is how music starts honestly. */
   const tryAutoplay = async () => {
+    if (!audio.paused) return;
     try {
       await audio.play();
-      persistPreference();
-      setActivateVisible(false);
-      setDockVisible(true);
-      setIcons(true);
+      // on success: persist preference; dock appears via the 'play' event
     } catch (e) {
-      setActivateVisible(true); // honest fallback, not a fake success
+      // blocked — the message stays silent; the upcoming first user
+      // interaction will retry exactly once without any extra button
     }
   };
 
-  // autoplay attempt on load
   tryAutoplay();
-
-  // retry on the first user interaction anywhere
-  window.addEventListener('pointerdown', () => {
-    if (audio.paused) tryAutoplay();
-  }, { once: true, passive: true });
-  window.addEventListener('keydown', () => {
-    if (audio.paused) tryAutoplay();
-  }, { once: true, passive: true });
-
-  // retry on visibility change only after a prior failure (e.g. unlock after returning to tab)
-  document.addEventListener('visibilitychange', () => {
-    if (!document.hidden && audio.paused && preferred) tryAutoplay();
-  });
+  window.addEventListener('pointerdown', () => { if (audio.paused) tryAutoplay(); }, { once: true, passive: true });
+  window.addEventListener('keydown', () => { if (audio.paused) tryAutoplay(); }, { once: true, passive: true });
 
   /* ---------------- calendar (December 2026) ---------------- */
   const calGrid = $('#calGrid');

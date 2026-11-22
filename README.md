@@ -15,11 +15,11 @@ Zero dependencies — no build step, no install. Fonts, images and the audio tra
 
 ## Sections
 
-The invitation has no header — it starts immediately with a full-screen hero (bride portrait, 100svh). Guided rhythm: invitation (warm ivory editorial) → hosts & event info (photo, left-aligned editorial) → elegant December 2026 calendar (12 highlighted, ivory) → music player (full-screen gold-embroidery stage) → location (ivory, minimal editorial) → minimal live countdown (ornament textile) → «Анкета» RSVP form (ivory) → large dark photographic gallery → closing message (white-dress bride portrait). No header, no card-box UI, no dashboard chrome.
+The invitation has no header — it starts immediately with a full-screen hero (bride portrait, 100svh). Guided rhythm: invitation (warm ivory editorial) → hosts & event info (photo, left-aligned editorial) → elegant December 2026 calendar (12 highlighted, ivory) → location (ivory, minimal editorial) → minimal live countdown (ornament textile) → «Анкета» RSVP form (ivory) → large dark photographic gallery → closing message (white-dress bride portrait). No header, no card-box UI, no dashboard chrome. The «Той үнісі» music section was intentionally removed — the music runs as a persistent background track and is controlled from a small floating mini-dock (play/pause) that stays across all sections.
 
 ## Music
 
-The page **attempts to autoplay** the background music the moment it opens and again on the first user interaction. Honest fallback: if the browser blocks audio-with-sound autoplay (typical on mobile), an elegant «Музыканы қосу» activation chip appears — the player never claims it started when it didn't. Once enabled, the music continues across every section (a persistent mini-dock shows play/pause, animated equalizer and the song title) without restarting. The licensed MP3 lives at `public/assets/audio/5588669ada1c6a66638df27bdc4c0666.mp3` and is pointed to by `AUDIO_SRC` in `script.js`. If the file is missing, the player shows a polite note instead of failing.
+The page **attempts to autoplay** the background music the moment it opens (`audio.play()` + `loop: true` — the track repeats seamlessly). Browsers block audio-with-sound autoplay, so as a fallback the music also starts immediately on the first user interaction — no activation chip, no fake controls. Once started, it continues across every section, does not stop on scroll, and loops forever. A small persistent mini-dock (play/pause + animated equalizer + song title) appears and stays; it is the only music control. The licensed MP3 lives at `public/assets/audio/5588669ada1c6a66638df27bdc4c0666.mp3` and is pointed to by `AUDIO_SRC` in `script.js`.
 
 To add the track:
 
