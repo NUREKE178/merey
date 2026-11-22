@@ -7,12 +7,11 @@ A luxurious Kazakh *Kyz Uzatu* (daughter-giving) wedding invitation website — 
 ## Quick start
 
 ```bash
-npm install        # fonts (self-hosted, copied into public/assets/fonts)
 npm start          # → http://localhost:3000
 npm test           # backend smoke tests (RSVP validation, headers, static)
 ```
 
-No build step. Node.js ≥ 20 only (zero runtime dependencies).
+Zero dependencies — no build step, no install. Fonts, images and the audio track slot are self-hosted and committed in `public/`. Node.js ≥ 20 only.
 
 ## Sections
 
@@ -30,23 +29,28 @@ To add the track:
 
 ## RSVP backend
 
-`POST /api/rsvp` persists every accepted submission to `data/rsvps.jsonl` (JSON Lines, append-only) with a basic in-memory rate limit (6 requests/min/IP) and validation:
+`POST /api/rsvp` validates every submission (name 2–80 chars, guests 1–30, coming=`yes|no`) and persists it — success is only shown after the server confirms. Errors surface the server message in Kazakh.
 
-- `name` — 2–80 chars
-- `guests` — integer 1–30
-- `coming` — `'yes'` | `'no'`
+**Local development** (`npm start`) writes submissions to `data/rsvps.jsonl` (JSON Lines, append-only).
 
-Success is only shown after the server confirms. Errors surface the server message in Kazakh.
+**Production (Vercel)** forwards every accepted submission to a **Google Sheets Apps Script webhook** (see below). The dataset lives in your spreadsheet, not in the read-only Vercel filesystem. If the webhook env var is not set, `POST /api/rsvp` honestly answers `503` instead of silently dropping the submission.
 
-### Optional Google Sheets integration
+### RSVP via Google Sheets
 
-If you deploy this with an **Google Apps Script web app**, point the server at it:
+A spreadsheet is already created for this project:
 
-```bash
-GOOGLE_SHEETS_WEBHOOK_URL=https://script.google.com/macros/s/.../exec npm start
-```
+- **Sheet**: `Мерей — Қыз ұзату тойы (RSVP)` — open [this link](https://docs.google.com/spreadsheets/d/1_WZrS0wo9eLDySO_HqIEn1l2uQ3q0oAuXx11ozvtZew/edit)
+- **Tab**: `Қонақтар` — headers: Аты-жөні · Қонақтар саны · Келеді? · Жауап берген уақыт
+- **Webhook code**: [`scripts/apps-script-webhook.gs`](scripts/apps-script-webhook.gs) (already contains this spreadsheet's ID)
 
-Every accepted submission is then forwarded there (fire-and-forget, non-blocking). The site works fully without it.
+Set it up once:
+
+1. Open [script.google.com](https://script.google.com) → new project → paste the entire contents of `scripts/apps-script-webhook.gs`
+2. Deploy → New deployment → type **Web app** → Execute as **Me** → Access **Anyone** (the sheet is for the wedding guest list; the webhook only appends a row)
+3. Copy the web app URL
+4. In Vercel → Project → Settings → Environment Variables: add `GOOGLE_SHEETS_WEBHOOK_URL` with that URL → redeploy
+
+The site now writes every accepted RSVP into the `Қонақтар` sheet. That's the only manual step — everything else is wired and tested.
 
 ## Google Maps
 
@@ -55,7 +59,10 @@ The location section links to Google Maps (`?api=1&query=Жетісай қала
 ## Structure
 
 ```
-server.mjs             node:http server — static files + /api/rsvp + security headers
+server.mjs             local dev server (node:http) — serves public/ + POST /api/rsvp
+api/
+  core.mjs             shared RSVP logic: validation, rate limit, persistence/webhook
+  rsvp.js              Vercel serverless function (POST /api/rsvp)
 public/
   index.html           single-page site (semantic, mobile-first)
   assets/css/styles.css  design system (CSS vars: burgundy / wine / gold / cream)
@@ -64,11 +71,24 @@ public/
   assets/fonts/         woff2 (with cyrillic + cyrillic-ext subsets for Kazakh)
   assets/images/        processed authentic Kazakh photography
   assets/audio/         <- drop the licensed MP3 here
+scripts/apps-script-webhook.gs
+                        Google Apps Script that appends RSVP rows to the sheet
 tests/server.test.mjs   backend smoke tests
+vercel.json           Vercel config: static public/ + security/caching headers
 ```
 
 Fonts: Bad Script (calligraphy headings), Cormorant Garamond (elegant serif info), Inter (clean readable body). All cover Kazakh Cyrillic letters (Ә, Ғ, Қ, Ң, Ө, Ү, Ұ, …).
 
+## Deploying on Vercel
+
+The repo is Vercel-ready out of the box:
+
+- Vercel serves `public/` as the static site (`vercel.json` pins `framework: null` + `outputDirectory: "public"` + the security headers and long-cache headers for `/assets/*`)
+- `api/rsvp.js` is auto-detected as the `/api/rsvp` serverless function (local dev uses the same logic via `server.mjs`)
+- A production deploy requires the site to live on the branch Vercel deploys (the default production branch). Vercel serves `main` for production by default — the 404 you saw is the production `main` branch, which (before this change) contained only the initial README.
+
+Local development still works as before: `npm start` serves the site at `http://localhost:3000`.
+
 ## Deployment
 
-Any Node.js host works (Render, Railway, Fly, VPS…): run `npm start`, expose the port. The site is fully self-contained (fonts and images are self-hosted) and needs no external services. Google Fonts is not used.
+Any Node.js host works for local serving (Render, Railway, Fly, VPS…): run `npm start`. On Vercel, deploy from GitHub — the repository auto-deploys on push, serving `public/` + the `/api/rsvp` function.

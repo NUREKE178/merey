@@ -70,7 +70,9 @@ test('RSVP: valid submission is stored', async () => {
     body: JSON.stringify({ name: 'Айдана Жарылғазықызы', guests: 3, coming: 'yes' }),
   });
   assert.equal(res.status, 200);
-  assert.deepEqual(await res.json(), { ok: true });
+  const body = await res.json();
+  assert.equal(body.ok, true);
+  assert.ok(['jsonl', 'sheets'].includes(body.storage));
 });
 
 test('RSVP: validation rejects bad input', async () => {
