@@ -15,17 +15,18 @@ Zero dependencies — no build step, no install. Fonts, images and the audio tra
 
 ## Sections
 
-Hero → invitation («Құрметті қонақтар!») → music player (Алтынай Жорабаева — «Қызыма тілек») → event details (Өмірзақ – Алия, 12 желтоқсан 2026, 19:00) → December 2026 calendar (12 highlighted) → location (Жетісай қаласы «Мұрагер» тойханасы + Google Maps) → live countdown → «Анкета» RSVP form → photo gallery carousel → closing message.
+Hero (bride portrait, 100svh) → invitation on rich burgundy → hosts & event info (Өмірзақ – Алия, 12 желтоқсан 2026, 19:00, photo background) → elegant December 2026 calendar (12 highlighted) → music player (Алтынай Жорабаева — «Қызыма тілек») → location (Жетісай қаласы «Мұрагер» тойханасы + Google Maps, photo) → live countdown (ornament textile) → «Анкета» RSVP form → large photographic gallery → closing message (white-dress bride portrait). Flowing, full-screen photographic sections with no card-box UI.
 
 ## Music
 
-Music starts **only after the visitor presses play** (no autoplay). Until the licensed MP3 is added, the player shows a polite note instead of failing.
+Music starts **only after the visitor presses play** (no autoplay). The licensed MP3 provided by the site owner lives at `public/assets/audio/5588669ada1c6a66638df27bdc4c0666.mp3` and the player points at that file (see `AUDIO_SRC` in `script.js`). If the file is missing it, the player shows a polite note instead of failing.
 
 To add the track:
 
-1. Copy the MP3 (licensed) into `public/assets/audio/`
-2. Name it `qyzima-tilek.mp3`
-3. Restart the server (or just refresh — the file is served from `/assets/audio/`)
+The licensed MP3 is already in place (provided by the site owner) at `public/assets/audio/5588669ada1c6a66638df27bdc4c0666.mp3`. To replace or re-name it:
+1. Drop the new licensed MP3 into `public/assets/audio/`
+2. Point `AUDIO_SRC` in `public/assets/js/script.js` at the new filename
+3. (Re)load the page — the player reads it from `/assets/audio/`
 
 ## RSVP backend
 
@@ -70,7 +71,7 @@ public/
   assets/fonts.css      self-hosted fonts (Bad Script, Cormorant Garamond, Inter)
   assets/fonts/         woff2 (with cyrillic + cyrillic-ext subsets for Kazakh)
   assets/images/        processed authentic Kazakh photography
-  assets/audio/         <- drop the licensed MP3 here
+  assets/audio/         <- licensed MP3 (provided by the site owner)
 scripts/apps-script-webhook.gs
                         Google Apps Script that appends RSVP rows to the sheet
 tests/server.test.mjs   backend smoke tests
