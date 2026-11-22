@@ -51,6 +51,7 @@
   const dock = $('#musicDock');
   const dockToggle = $('#dockToggle');
   const dockIconUse = $('#dockIconUse');
+  const activateChip = $('#musicActivate');
   const STORAGE_KEY = 'merey-music-enabled';
 
   const persistPreference = () => {
@@ -69,6 +70,18 @@
     }
   };
 
+  const setActivationVisible = (visible) => {
+    if (!activateChip) return;
+    document.body.classList.toggle('music-blocked', visible);
+    if (visible) {
+      activateChip.removeAttribute('hidden');
+      requestAnimationFrame(() => requestAnimationFrame(() => activateChip.classList.add('is-visible')));
+    } else {
+      activateChip.classList.remove('is-visible');
+      activateChip.setAttribute('hidden', '');
+    }
+  };
+
   const setIcons = (playing) => {
     if (dockIconUse) dockIconUse.setAttribute('href', playing ? '#ic-pause' : '#ic-play');
     if (dockToggle) dockToggle.setAttribute('aria-label', playing ? 'Музыканы тоқтату' : 'Музыканы қосу');
@@ -78,6 +91,7 @@
   audio.addEventListener('play', () => {
     persistPreference();
     setDockVisible(true);
+    setActivationVisible(false);
     setIcons(true);
   });
   audio.addEventListener('pause', () => { setIcons(false); });
@@ -93,25 +107,32 @@
 
   if (dockToggle) dockToggle.addEventListener('click', togglePlay);
 
-  /* ---- autoplay strategy (honest) ----
-     Browsers block audio-with-sound autoplay. We attempt playback on load,
-     and retry once on the first user interaction. If it fails, we show
-     nothing — no activation button, no fake success. The retry after the
-     first real interaction is how music starts honestly. */
+  /* ---- activation strategy (honest) ----
+     Browsers block audio-with-sound autoplay. We attempt playback once on
+     load; if it fails, the honest «Музыканы қосу» chip appears and the only
+     way in is a deliberate tap — no fake success, no hidden controls.
+     The chip is only for the blocked-load state; once music plays, the
+     dock is the single control (play/pause) and the chip leaves. */
   const tryAutoplay = async () => {
     if (!audio.paused) return;
     try {
       await audio.play();
       // on success: persist preference; dock appears via the 'play' event
     } catch (e) {
-      // blocked — the message stays silent; the upcoming first user
-      // interaction will retry exactly once without any extra button
+      setActivationVisible(true); // blocked — show the honest activation chip
     }
   };
 
   tryAutoplay();
-  window.addEventListener('pointerdown', () => { if (audio.paused) tryAutoplay(); }, { once: true, passive: true });
-  window.addEventListener('keydown', () => { if (audio.paused) tryAutoplay(); }, { once: true, passive: true });
+
+  if (activateChip) {
+    activateChip.addEventListener('click', () => {
+      audio.play().catch(() => {
+        // honest failure: keep the chip visible so the user can retry
+        setActivationVisible(true);
+      });
+    });
+  }
 
   /* ---------------- calendar (December 2026) ---------------- */
   const calGrid = $('#calGrid');

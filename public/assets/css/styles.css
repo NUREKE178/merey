@@ -464,6 +464,28 @@ a { color: inherit; }
 /* hero scroll indicator lifts when the music dock is visible */
 body.music-active .hero-scroll { bottom: 96px; }
 
+/* activation chip — honest: shown only when autoplay is blocked by the browser */
+.music-activate {
+  position: fixed; bottom: 1.1rem; left: 50%; transform: translateX(-50%) translateY(1.5rem);
+  z-index: 120; opacity: 0; pointer-events: none;
+  display: flex; align-items: center; gap: .6rem;
+  padding: .78rem 1.4rem; border-radius: 999px;
+  color: var(--gold-300); cursor: pointer;
+  background: rgba(22,7,11,.82); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(217,178,101,.38);
+  box-shadow: 0 20px 44px -16px rgba(0,0,0,.75);
+  font-family: var(--font-sans); font-size: .78rem; font-weight: 600;
+  letter-spacing: .18em; text-transform: uppercase; white-space: nowrap;
+  transition: opacity .5s var(--ease-premium), transform .5s var(--ease-premium), color .25s var(--ease-premium), border-color .25s var(--ease-premium);
+}
+.music-activate[hidden] { display: none; }
+.music-activate.is-visible { opacity: 1; transform: translateX(-50%) translateY(0); pointer-events: auto; }
+.music-activate svg { width: 15px; height: 15px; flex-shrink: 0; }
+.music-activate:hover { color: var(--gold-200); border-color: var(--gold-400); }
+.music-activate:focus-visible { outline: 2px solid var(--gold-300); outline-offset: 3px; }
+/* hero scroll indicator lifts when the activation chip is shown */
+body.music-blocked .hero-scroll { bottom: 96px; }
+
 /* ==================== RESPONSIVE ==================== */
 
 @media (max-width: 640px) {
